@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.assef.soare.uber.R;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
