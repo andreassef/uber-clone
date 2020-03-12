@@ -15,7 +15,6 @@ public class ConfiguracaoFirebase {
         }
         return database;
     }
-
     //retorna a instancia do FirebaseAuth
     public static FirebaseAuth getFirebaseAutenticacao(){
         if(auth == null){
