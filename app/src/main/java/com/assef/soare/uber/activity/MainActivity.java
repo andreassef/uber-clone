@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         //validar permissões
         Permissoes.validarPermissoes(permissoes, this, 1);
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-        autenticacao.signOut();
+        //autenticacao.signOut();
     }
 
     @Override
