@@ -65,10 +65,11 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/buttonChamarUber"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_gravity="bottom|center_vertical"
+        android:onClick="chamarUber"
         android:text="Chamar Uber"
         android:theme="@style/botaoPadrao" />
 
