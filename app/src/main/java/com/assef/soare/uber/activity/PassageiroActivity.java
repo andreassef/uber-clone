@@ -1,5 +1,11 @@
 package com.assef.soare.uber.activity;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import com.assef.soare.uber.config.ConfiguracaoFirebase;
@@ -7,6 +13,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -15,6 +22,7 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +35,8 @@ public class PassageiroActivity extends AppCompatActivity implements OnMapReadyC
 
     private GoogleMap mMap;
     private FirebaseAuth autenticacao;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +68,55 @@ public class PassageiroActivity extends AppCompatActivity implements OnMapReadyC
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        recuperarLocalizacaoUsuario();
+    }
+
+    private void recuperarLocalizacaoUsuario() {
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                //recuperar latitude e longitude
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                LatLng meuLocal = new LatLng(latitude, longitude);
+                mMap.clear();
+                mMap.addMarker(new MarkerOptions().position(meuLocal).title("Meu Local")
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.usuario)));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(meuLocal, 19));
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+            }
+        };
+
+        //solicitar atualizacoes de localizacao
+        if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    Activity#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for Activity#requestPermissions for more details.
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                    10000,
+                    10,
+                    locationListener);
+            return;
+        }
     }
 
     @Override
